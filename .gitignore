@@ -1,0 +1,10 @@
+# Ignore everything
+*
+
+# Except deploy artifacts
+!build/
+!build/**
+!app.sh
+!package.json
+!.nvmrc
+!.gitignore
