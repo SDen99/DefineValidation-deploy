@@ -1,0 +1,13 @@
+import { j as json } from './index-CoD1IJuy.js';
+import { execFile } from 'node:child_process';
+import { mkdir, writeFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join, dirname } from 'node:path';
+import { randomUUID } from 'node:crypto';
+import { fileURLToPath } from 'node:url';
+import { existsSync } from 'node:fs';
+
+const p=dirname(fileURLToPath(import.meta.url));const f=async({request:u})=>{let f=null;try{const o=await u.formData(),l=o.get("standard"),m=o.get("version"),v=o.get("rules");if(!l||!m)return json({status:"error",error:"Missing required fields: standard, version"},{status:400});const y=[];for(const[r,t]of o.entries())"datasets"===r&&t instanceof File&&y.push(t);if(0===y.length)return json({status:"error",error:"No dataset files provided"},{status:400});f=join(tmpdir(),`cdisc-validate-${randomUUID()}`),await mkdir(f,{recursive:!0});const w=join(f,"datasets");await mkdir(w);const h=[];for(const r of y){const t=join(w,r.name),e=Buffer.from(await r.arrayBuffer());await writeFile(t,e),h.push(t);}const g=[];if(v&&v.trim()){const r=join(f,"rules.yaml");await writeFile(r,v,"utf-8"),g.push("--rules",r);}const $=function(){let r=p;for(let t=0;t<10;t++){if(existsSync(join(r,"scripts","run_validation.py")))return r;r=dirname(r);}r=process.cwd();for(let t=0;t<5;t++){if(existsSync(join(r,"scripts","run_validation.py")))return r;r=dirname(r);}return existsSync("/mnt/code/scripts/run_validation.py")?"/mnt/code":process.cwd()}();console.warn(`[api/validate] Project root: ${$}`);const E=join($,"scripts","run_validation.py"),P=function(r){const t=join(r,"scripts",".venv","bin","python");return existsSync(t)?t:"python3"}($),_=["--datasets",...h,...g,"--standard",l,"--version",m];console.warn(`[api/validate] Running validation: ${y.map(r=>r.name).join(", ")}`),console.warn(`[api/validate] Standard: ${l} v${m}, Rules: ${v?"yes":"none"}`);const{stdout:B,stderr:F}=await function(r,e,s){return new Promise((o,n)=>{execFile(r,[e,...s],{timeout:6e5,maxBuffer:52428800,env:{...process.env,PYTHONUNBUFFERED:"1"}},(r,t,e)=>{r&&!t?n(new Error(`Python process failed: ${r.message}\nstderr: ${e}`)):o({stdout:t,stderr:e});});})}(P,E,_);let N;F&&console.warn(`[api/validate] Python stderr: ${F.substring(0,500)}`);try{N=JSON.parse(B);}catch{return json({status:"error",error:`Failed to parse engine output: ${B.substring(0,200)}`},{status:500})}return json(N)}catch(l){const t=l instanceof Error?l.message:String(l);return console.error("[api/validate] Error:",t),json({status:"error",error:t},{status:500})}finally{f&&rm(f,{recursive:true,force:true}).catch(()=>{});}};
+
+export { f as POST };
+//# sourceMappingURL=_server.ts-DXpDAg9z.js.map

@@ -10,20 +10,20 @@ return {
 	assets: new Set(["defineV21-ADaM.xml","favicon.ico","favicon.png","sample-rule-invalid.yaml","sample-rules.yaml"]),
 	mimeTypes: {".xml":"text/xml",".png":"image/png",".yaml":"text/yaml"},
 	_: {
-		client: {start:"_app/immutable/entry/start.BIF-yDST.js",app:"_app/immutable/entry/app.DNpebVAB.js",imports:["_app/immutable/entry/start.BIF-yDST.js","_app/immutable/chunks/CYMuY_AM.js","_app/immutable/entry/app.DNpebVAB.js","_app/immutable/chunks/CYMuY_AM.js"],stylesheets:["_app/immutable/assets/vendor.BpcL6yKj.css","_app/immutable/assets/vendor.BpcL6yKj.css"],fonts:[],uses_env_dynamic_public:false},
+		client: {start:"_app/immutable/entry/start.BBk4-vxT.js",app:"_app/immutable/entry/app.CDENjvn8.js",imports:["_app/immutable/entry/start.BBk4-vxT.js","_app/immutable/chunks/BwtC1Xdt.js","_app/immutable/entry/app.CDENjvn8.js","_app/immutable/chunks/BwtC1Xdt.js"],stylesheets:["_app/immutable/assets/vendor.BpcL6yKj.css","_app/immutable/assets/vendor.BpcL6yKj.css"],fonts:[],uses_env_dynamic_public:false},
 		nodes: [
-			__memo(() => import('./chunks/0-OgEiFD6r.js')),
-			__memo(() => import('./chunks/1-4FBhGBMM.js')),
-			__memo(() => import('./chunks/2-Df9GBTiQ.js')),
-			__memo(() => import('./chunks/3-BSaD7aWI.js')),
-			__memo(() => import('./chunks/4-Cf2qDGeD.js')),
-			__memo(() => import('./chunks/5-3kVKH7aP.js')),
-			__memo(() => import('./chunks/6-CVFP0Y1b.js')),
-			__memo(() => import('./chunks/7-BkjSLkwG.js')),
-			__memo(() => import('./chunks/8-tx9KFRYE.js')),
-			__memo(() => import('./chunks/9-BQPuLRMO.js')),
-			__memo(() => import('./chunks/10-BvLQgNxJ.js')),
-			__memo(() => import('./chunks/11-C7Vc2pS1.js'))
+			__memo(() => import('./chunks/0-BseDCXBh.js')),
+			__memo(() => import('./chunks/1-Cm_6wNI-.js')),
+			__memo(() => import('./chunks/2-BVj8acc7.js')),
+			__memo(() => import('./chunks/3-DqpDUR_k.js')),
+			__memo(() => import('./chunks/4-DFCUgDkm.js')),
+			__memo(() => import('./chunks/5-Bc8Cxiru.js')),
+			__memo(() => import('./chunks/6-Qu7HKpV7.js')),
+			__memo(() => import('./chunks/7-Ian9Icua.js')),
+			__memo(() => import('./chunks/8-Umq96S5y.js')),
+			__memo(() => import('./chunks/9-j6uFfqID.js')),
+			__memo(() => import('./chunks/10-C8Uci0Yy.js')),
+			__memo(() => import('./chunks/11-XXSTA32k.js'))
 		],
 		remotes: {
 			
@@ -35,6 +35,13 @@ return {
 				params: [],
 				page: { layouts: [0,], errors: [1,], leaf: 4 },
 				endpoint: null
+			},
+			{
+				id: "/api/validate",
+				pattern: /^\/api\/validate\/?$/,
+				params: [],
+				page: null,
+				endpoint: __memo(() => import('./chunks/_server.ts-DXpDAg9z.js'))
 			},
 			{
 				id: "/datasets",
