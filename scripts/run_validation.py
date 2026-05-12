@@ -28,9 +28,19 @@ import subprocess
 import sys
 import tempfile
 
-
 def find_engine_dir():
-    """Locate the cdisc-rules-engine repo (sibling of this project)."""
+    """Locate the cdisc-rules-engine directory.
+
+    Search order:
+      1. /mnt/code/cdisc/cdisc-rules-engine  (Domino deployment)
+      2. ../../cdisc-rules-engine              (local dev — sibling directory)
+    """
+    # Domino deployment location
+    domino_dir = "/mnt/code/cdisc/cdisc-rules-engine"
+    if os.path.isdir(domino_dir):
+        return domino_dir
+
+    # Local dev — sibling of the project root
     scripts_dir = os.path.dirname(os.path.abspath(__file__))
     project_dir = os.path.dirname(scripts_dir)
     engine_dir = os.path.join(os.path.dirname(project_dir), "cdisc-rules-engine")
@@ -103,6 +113,12 @@ def main():
         default=False,
         help="Use raw report format (engine's internal JSON structure)",
     )
+    parser.add_argument(
+        "--pool-size",
+        type=int,
+        default=int(os.environ.get("CDISC_POOL_SIZE", "2")),
+        help="Number of parallel processes for validation (default: 2, or CDISC_POOL_SIZE env var)",
+    )
 
     args = parser.parse_args()
 
@@ -110,13 +126,18 @@ def main():
     engine_dir = find_engine_dir()
     if not engine_dir:
         error_json(
-            "cdisc-rules-engine repo not found. "
-            "Expected at: ../../cdisc-rules-engine (sibling directory)"
+            "cdisc-rules-engine not found. "
+            "Searched: /mnt/code/cdisc/cdisc-rules-engine (Domino), "
+            "../../cdisc-rules-engine (local dev)"
         )
 
     core_py = os.path.join(engine_dir, "core.py")
     if not os.path.isfile(core_py):
         error_json(f"core.py not found at {core_py}")
+
+    # Shim patches pyreadstat.read_xport to handle non-UTF-8 XPT files
+    scripts_dir = os.path.dirname(os.path.abspath(__file__))
+    engine_shim = os.path.join(scripts_dir, "engine_shim.py")
 
     # --- Validate cache ---
     if args.cache:
@@ -154,6 +175,7 @@ def main():
 
         cmd = [
             python_exe,
+            engine_shim,
             core_py,
             "validate",
             "-s", args.standard,
@@ -163,6 +185,7 @@ def main():
             "-o", output_base,
             "-p", "disabled",
             "-l", "disabled",
+            "-ps", str(args.pool_size),
         ]
 
         if args.raw:
